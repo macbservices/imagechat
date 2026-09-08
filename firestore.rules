@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Modelo de segurança:
+// - Todas as MENSAGENS são escritas apenas pelas Cloud Functions (Admin SDK,
+//   que ignora estas regras). O cliente só lê. Isso concentra na function o
+//   controle de ban, rate limiting e a decisão texto/imagem.
+// - Cada usuário pode manter só o próprio perfil em /usuarios, sem poder
+//   escrever nos campos sensíveis `banido` e `ultimaGeracao` (só a function).
+// - Ações de admin (apagar mensagem, banir) também passam por Cloud Functions.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function notTouchingProtected() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['banido', 'ultimaGeracao']);
+    }
+
+    match /mensagens/{mensagemId} {
+      allow read: if signedIn();
+      allow create, update, delete: if false;
+    }
+
+    match /usuarios/{uid} {
+      allow read: if signedIn();
+      allow create: if isOwner(uid)
+        && !('banido' in request.resource.data)
+        && !('ultimaGeracao' in request.resource.data);
+      allow update: if isOwner(uid) && notTouchingProtected();
+      allow delete: if false;
+    }
+  }
+}
