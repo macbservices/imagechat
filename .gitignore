@@ -22,3 +22,8 @@ ui-debug.log*
 # Editor / OS
 .DS_Store
 .vscode/
+
+# Ferramentas de agente (bundle local de skills) — não fazem parte do produto
+.agents/
+.claude/
+skills-lock.json
