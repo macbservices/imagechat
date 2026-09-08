@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
 // Config do app web (Firebase Console -> Project settings -> Your apps -> Web).
 // Preenchida por variáveis de ambiente de build (.env / painel do provedor).
@@ -17,11 +16,12 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const functions = getFunctions(app, 'us-central1');
 export const googleProvider = new GoogleAuthProvider();
+
+// As Cloud Functions estão temporariamente na Vercel (ver src/lib/functions.js),
+// então aqui não há mais getFunctions() — só Auth e Firestore.
 
 if (import.meta.env.VITE_USE_EMULATORS === 'true') {
   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
   connectFirestoreEmulator(db, '127.0.0.1', 8080);
-  connectFunctionsEmulator(functions, '127.0.0.1', 5001);
 }

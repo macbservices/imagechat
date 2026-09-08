@@ -1,0 +1,7 @@
+# A Vercel só precisa do front (Vite) + api/. O resto é do Firebase.
+functions
+dist
+.firebase
+firestore.rules
+firestore.indexes.json
+.github
