@@ -19,6 +19,11 @@ firestore-debug.log*
 ui-debug.log*
 *.log
 
+# Chave de service account — NUNCA commitar (vai só na env var da Vercel)
+*firebase-adminsdk*.json
+*serviceAccount*.json
+service-account*.json
+
 # Editor / OS
 .DS_Store
 .vscode/
