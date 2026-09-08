@@ -2,6 +2,7 @@
 const ALLOWED = [
   'https://imagechat-eccfb.web.app',
   'https://imagechat-eccfb.firebaseapp.com',
+  'https://imagechat-seven.vercel.app',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
 ];
